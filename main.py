@@ -6,15 +6,17 @@ from handlers import (
         start_router,
         picture_router,
         info_router,
-        bc_router
+        bc_router,
+        questions_router
     )
 
 """ниже создали меню для бота set my commands"""
 async def main():
     await bot.set_my_commands([
      BotCommand(command="start", description="начало"),
-     BotCommand(command="info", description="myinfo"),
-     BotCommand(command="beauty", description="консультация")
+     BotCommand(command="myinfo", description="myinfo"),
+     BotCommand(command="beauty", description="консультация"),
+     BotCommand(command="quest", description="опросник")
 
     ])
 
@@ -23,6 +25,7 @@ async def main():
     dp.include_router(picture_router)
     dp.include_router(info_router)
     dp.include_router(bc_router)
+    dp.include_router(questions_router)
 
     await dp.start_polling(bot)
 

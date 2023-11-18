@@ -4,7 +4,7 @@ from aiogram.filters import Command
 
 bc_router = Router()
 
-
+"""создали обработчик который спрашивает тип кожи и отпрвляет уход за кожей по типу """
 @bc_router.message(Command("beauty"))
 async def beaty(message: types.Message):
     kb = types.ReplyKeyboardMarkup(
@@ -29,7 +29,7 @@ async def beaty(message: types.Message):
     )
 
     await message.answer("Выберите свой тип кожи:",
-    reply_markup=kb)
+    reply_markup = kb)
 
 
 @bc_router.message(F.text == "чувствительная кожа")
