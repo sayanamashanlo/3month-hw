@@ -9,6 +9,14 @@ from handlers import (
         bc_router,
         questions_router
     )
+from db.queries import init_db, create_table, added_beauty
+
+
+# Стартап запуск вместе с ботом
+async def on_startup(dispatcher):
+    init_db()
+    create_table()
+    added_beauty()
 
 """ниже создали меню для бота set my commands"""
 async def main():
@@ -16,8 +24,8 @@ async def main():
      BotCommand(command="start", description="начало"),
      BotCommand(command="myinfo", description="myinfo"),
      BotCommand(command="beauty", description="консультация"),
-     BotCommand(command="quest", description="опросник")
-
+     BotCommand(command="quest", description="опросник"),
+     BotCommand(command="show_answer", description="ответы")
     ])
 
 
@@ -26,6 +34,7 @@ async def main():
     dp.include_router(info_router)
     dp.include_router(bc_router)
     dp.include_router(questions_router)
+    dp.startup.register(on_startup)
 
     await dp.start_polling(bot)
 
