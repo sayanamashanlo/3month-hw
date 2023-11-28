@@ -5,7 +5,7 @@ from aiogram import Bot
 
 picture_router = Router()
 
-@picture_router.message(Command('pic'))
+@picture_router.message(Command('picture'))
 async def send_picture(message: types.Message):
     file1 = types.FSInputFile("images/flag_turciya.jpg")
     file2 = types.FSInputFile("images/flag_argentina.jpg")

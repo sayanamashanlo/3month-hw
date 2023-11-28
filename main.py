@@ -9,23 +9,24 @@ from handlers import (
         bc_router,
         questions_router
     )
-from db.queries import init_db, create_table, added_beauty
+from db.queries import init_db, create_table, populate_tables
 
 
 # Стартап запуск вместе с ботом
 async def on_startup(dispatcher):
     init_db()
     create_table()
-    added_beauty()
+    populate_tables()
 
 """ниже создали меню для бота set my commands"""
 async def main():
     await bot.set_my_commands([
      BotCommand(command="start", description="начало"),
-     BotCommand(command="myinfo", description="myinfo"),
-     BotCommand(command="beauty", description="консультация"),
-     BotCommand(command="quest", description="опросник"),
-     BotCommand(command="show_answer", description="ответы")
+     BotCommand(command="myinfo", description="информация о себе"),
+     BotCommand(command="picture", description="картинки"),
+     BotCommand(command="shop", description="магазин косметики"),
+     BotCommand(command="quest", description="вопросы"),
+     BotCommand(command="check", description="проверка из db"),
     ])
 
 

@@ -12,62 +12,92 @@ def init_db():
 def create_table():
      cursor.execute(
             """
-            DROP TABLE IF EXISTS beauty
+            DROP TABLE IF EXISTS category
             """
         )
      cursor.execute(
             """
-            DROP TABLE IF EXISTS answers_for_ask
+            DROP TABLE IF EXISTS products
             """
         )
      cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS beauty (
+            CREATE TABLE IF NOT EXISTS category (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT)
             """
         )
      cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS answers_for_ask (
+            CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            image TEXT,
-            beauty_id INTEGER,
-            FOREIGN KEY (beauty_id) REFERENCES beauty (id)
+            price DEMICAL,
+            category_id INTEGER,
+            FOREIGN KEY (category_id) REFERENCES category (id)
             )
             """
         )
      db.commit()
 
-def added_beauty():
+def  populate_tables():
      cursor.execute(
             """
-            INSERT INTO beauty (name) VALUES 
-            ('чувствительная кожа'),
-            ('сухая кожа'),
-            ('жирная кожа'),
-            ('комбинированная кожа'),
-            ('нормальная кожа')
+            INSERT INTO category (name) VALUES 
+            ('крем'),
+            ('тонер'),
+            ('сыворотка')
             """
         )
      cursor.execute(
             """
-            INSERT INTO answers_for_ask (name, image, beauty_id) VALUES
-            ('гидрофильное масло-Beauty of Joseon','beauty_images\\choson-_4_-_1_.png' ,1),
-            ('гидрофильное масло-SIORIS', 'beauty_images\\49968387.jpg',2),
-            ('гидрофильное масло-Dr.Althea', 'beauty_images\\2-e42d2b73e52cc160f2c2ae3dd8b939ef.jpg',3),
-            ('гидрофильное масло-SKIN 1004 centella','beauty_images\\гидрофильное-масло-skin-1004-centella-легчайшее-гидрофильное',4),
-            ('гидрофильное масло-SIORIS', 'beauty_images\\49968387.jpg',5 )
+            INSERT INTO products (name, price ,category_id) VALUES
+            ('ELLO', 1400, 1),
+            ('Dr. Althea', 1799, 2),
+            ('SKIN 1004 CENTELLA', 1350, 1),
+            ('Beauty of Jesoun', 1200, 2),
+            ('Pyunkang Yul', 1990, 3),
+            ('ROUND LAB с березовым соком', 799, 3)
             """
         )
      db.commit()
 
 
-def get_answer():
+def get_product_by_category_id(category_id: int):
     cursor.execute(
         """
-        SELECT * FROM answers_for_ask
+        SELECT * FROM products WHERE category_id = :cat_id
+        """, {"cat_id": category_id}
+    )
+
+    return cursor.fetchall()
+
+
+def get_product_by_category_name(cat_name: str):
+    cursor.execute(
+        """
+        SELECT * FROM products WHERE category_id = 
+        (
+            SELECT id FROM category WHERE name = :cat_name
+        )
+        """, {"cat_name": cat_name}
+    )
+    return cursor.fetchall()
+
+
+def get_products_with_category():
+    cursor.execute(
+        """
+        SELECT p.name, c.name FROM products AS p JOIN category AS c ON p.category_id = c.id
+        """
+    )
+    return cursor.fetchall()
+
+
+def get_products():
+    cursor.execute(
+        """
+        SELECT * FROM products
         """
     )
     return cursor.fetchall()
@@ -75,5 +105,5 @@ def get_answer():
 if __name__ == "__main__":
     init_db()
     create_table()
-    added_beauty()
-    pprint(get_answer())
+    populate_tables()
+    pprint(get_products())

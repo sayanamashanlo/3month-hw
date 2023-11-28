@@ -22,9 +22,16 @@ class Questionare(StatesGroup):
 
 
 @questions_router.message(Command("quest"))
+@questions_router.message(F.text == "stop")
+async def stop_questions(message: types.Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Вопросы прерваны")
+
+@questions_router.message(Command("quest"))
 async def start_questions(message: types.Message, state:
 FSMContext):
     await state.set_state(Questionare.name)
+    await message.answer("Для выхода введите 'stop'")
     await message.answer("Как вас зовут?")
 
 
@@ -77,4 +84,5 @@ async def favorite_serial(message: types.Message, state: FSMContext):
     await state.update_data(favoriteserials=message.text)
     data = await state.get_data()
     print(data)
+    await state.clear()
     await message.answer("СПАСИБО ЗА ОТВЕТЫ, МЫ СВЯЖЕМСЯ С ВАМИ!")
