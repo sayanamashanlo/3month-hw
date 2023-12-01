@@ -23,6 +23,11 @@ async def start(message: types.Message):
                     text="О нас", callback_data="about"
                 )
             ],
+            [
+                types.InlineKeyboardButton(
+                    text="подписаться", callback_data='subscribe'
+                ),
+            ]
         ]
     )
     await message.answer(f"Привет, {message.from_user.first_name}!",
@@ -33,3 +38,14 @@ async def start(message: types.Message):
 @start_router.callback_query(F.data == "about")
 async def about_us(callback: types.CallbackQuery):
     await callback.message.answer("BEAUTY SHOP")
+
+@start_router.callback_query(F.data == "subscribe")
+async def subscribe_user(callback: types.CallbackQuery):
+    # user_id = str(callback.from_user.id)
+    user_name = callback.from_user.full_name
+    subscribe_user(user_name)
+    await callback.message.answer(f"{user_name}, Спасибо за подписку!")
+
+    # def process_subscribe_user(user_id, user_name):
+    #     print(f"User {user_name} ({user_id}) подписался.")
+    #     pass

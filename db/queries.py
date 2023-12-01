@@ -9,7 +9,22 @@ def init_db():
     cursor = db.cursor()
 
 
-def create_table():
+    """таблица для данных пользователя при подписке"""
+def create_tables():
+     cursor.execute(
+        """
+        DROP TABLE IF EXISTS user
+        """
+     )
+     cursor.execute(
+        """
+        CREATE TABlE IF NOT EXISTS user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        user_id INTEGER, 
+        user_name TEXT )
+        """
+     )
+     # таблица для магазина
      cursor.execute(
             """
             DROP TABLE IF EXISTS category
@@ -20,6 +35,7 @@ def create_table():
             DROP TABLE IF EXISTS products
             """
         )
+
      cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS category (
@@ -27,6 +43,20 @@ def create_table():
             name TEXT)
             """
         )
+     # таблица для опросника
+     cursor.execute(
+         """
+       CREATE TABLE IF NOT EXISTS Questionaire (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            age INTEGER,
+            country TEXT,
+            book TEXT,
+            film TEXT,
+            serial TEXT
+        )  
+         """
+     )
      cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS products (
@@ -40,7 +70,14 @@ def create_table():
         )
      db.commit()
 
-def  populate_tables():
+
+def subscribe_user(user_id: int, user_name: str):
+    cursor.execute(
+        """
+        INSERT INTO user  (user_id, user_name) VALUES (?,?) 
+        """,  (user_id, user_name)
+    )
+def populate_tables():
      cursor.execute(
             """
             INSERT INTO category (name) VALUES 
@@ -63,13 +100,21 @@ def  populate_tables():
      db.commit()
 
 
+def get_user_id():
+    cursor.execute(
+        """
+        SELECT * FROM user
+        """
+    )
+    return cursor.fetchall()
+
+
 def get_product_by_category_id(category_id: int):
     cursor.execute(
         """
         SELECT * FROM products WHERE category_id = :cat_id
         """, {"cat_id": category_id}
     )
-
     return cursor.fetchall()
 
 
@@ -94,6 +139,17 @@ def get_products_with_category():
     return cursor.fetchall()
 
 
+def save_questionaire(data):
+    print(data)
+    cursor.execute(
+        """
+        INSERT INTO Questionaire (name, age, country, book, film, serial) VALUES
+        (:name, :age, :country, :book, :film, :serial)
+        """, data
+    )
+    db.commit()
+
+
 def get_products():
     cursor.execute(
         """
@@ -104,6 +160,6 @@ def get_products():
 
 if __name__ == "__main__":
     init_db()
-    create_table()
+    create_tables()
     populate_tables()
     pprint(get_products())

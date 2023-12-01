@@ -3,6 +3,8 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+from db.queries import save_questionaire
+
 questions_router = Router()
 
 # FSM - FINITE STATE MACHINE(конечный автомат)
@@ -21,7 +23,7 @@ class Questionare(StatesGroup):
     favoriteserial =State()
 
 
-@questions_router.message(Command("quest"))
+@questions_router.message(Command("stop"))
 @questions_router.message(F.text == "stop")
 async def stop_questions(message: types.Message, state: FSMContext):
     await state.clear()
@@ -83,6 +85,7 @@ async def favorite_film(message: types.Message, state: FSMContext):
 async def favorite_serial(message: types.Message, state: FSMContext):
     await state.update_data(favoriteserials=message.text)
     data = await state.get_data()
-    print(data)
+    save_questionaire(data)
+    # print(data)
     await state.clear()
     await message.answer("СПАСИБО ЗА ОТВЕТЫ, МЫ СВЯЖЕМСЯ С ВАМИ!")
