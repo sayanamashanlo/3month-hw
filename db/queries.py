@@ -17,15 +17,6 @@ def create_tables():
         """
      )
      cursor.execute(
-        """
-        CREATE TABlE IF NOT EXISTS user (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        user_id INTEGER, 
-        user_name TEXT )
-        """
-     )
-     # таблица для магазина
-     cursor.execute(
             """
             DROP TABLE IF EXISTS category
             """
@@ -35,15 +26,30 @@ def create_tables():
             DROP TABLE IF EXISTS products
             """
         )
-
      cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS category (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT)
-            """
-        )
-     # таблица для опросника
+         '''
+         DROP TABLE IF EXISTS house
+         '''
+     )
+     cursor.execute('''
+             CREATE TABLE IF NOT EXISTS house (
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             title TEXT,
+             descr TEXT,
+             price INT,
+             url TEXT,
+             img TEXT
+             )
+             ''')
+     cursor.execute(
+         """
+         CREATE TABlE IF NOT EXISTS user (
+         id INTEGER PRIMARY KEY AUTOINCREMENT, 
+         user_id INTEGER, 
+         user_name TEXT )
+         """
+     )
+     db.commit()
      cursor.execute(
          """
        CREATE TABLE IF NOT EXISTS Questionaire (
@@ -57,6 +63,15 @@ def create_tables():
         )  
          """
      )
+     db.commit()
+     cursor.execute(
+         """
+         CREATE TABLE IF NOT EXISTS category (
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+         name TEXT)
+         """
+     )
+     db.commit()
      cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS products (
@@ -77,6 +92,8 @@ def subscribe_user(user_id: int, user_name: str):
         INSERT INTO user  (user_id, user_name) VALUES (?,?) 
         """,  (user_id, user_name)
     )
+
+
 def populate_tables():
      cursor.execute(
             """
@@ -139,13 +156,12 @@ def get_products_with_category():
     return cursor.fetchall()
 
 
-def save_questionaire(data):
-    print(data)
+def save_questionaire(name: str, age: int, country: str, book: str, film: str, serial: str):
     cursor.execute(
         """
         INSERT INTO Questionaire (name, age, country, book, film, serial) VALUES
-        (:name, :age, :country, :book, :film, :serial)
-        """, data
+        (?,?,?,?,?,?)
+        """, (name, age, country, book, film, serial)
     )
     db.commit()
 
@@ -157,6 +173,22 @@ def get_products():
         """
     )
     return cursor.fetchall()
+
+# house parser
+def save_house(title, descr, price, url, img):
+    data = {
+        'title': title,
+        'descr': descr,
+        'price': price,
+        'url': url,
+        'img': img
+    }
+
+    cursor.execute('''
+    INSERT INTO house (title, descr, price, url, img) VALUES
+    (:title, :descr, :price, :url, :img)
+    ''', data)
+
 
 if __name__ == "__main__":
     init_db()

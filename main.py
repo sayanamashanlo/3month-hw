@@ -8,7 +8,8 @@ from handlers import (
         info_router,
         bc_router,
         questions_router,
-        subscribe_router
+        subscribe_router,
+        group_messages_router
     )
 from db.queries import (init_db, create_tables, populate_tables)
 
@@ -45,6 +46,7 @@ async def main():
     dp.include_router(bc_router)
     dp.include_router(questions_router)
     dp.include_router(subscribe_router)
+    dp.include_router(group_messages_router)
     dp.startup.register(on_startup)
 
     await dp.start_polling(bot)
